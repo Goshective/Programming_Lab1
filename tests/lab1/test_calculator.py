@@ -1,6 +1,10 @@
 import unittest
 # import sys
-from lab1.calculator import parse_to_polish, calculate_polish
+
+def parse_to_polish():
+    pass
+def calculate_polish():
+    pass
 
 class CalculatorTestCase(unittest.TestCase):
 
