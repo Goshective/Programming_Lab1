@@ -2,20 +2,6 @@
 from operator import add, sub, mul, truediv, pow, neg
 
 
-# def parse_to_common(expression):
-#     '''
-#     Returns the list of strings, splited by numbers and operators, including brackets.
-
-#             Parameters:
-#                     expression (str): A math expression
-
-#             Returns:
-#                     parsed_ex (list[str]): list of numbers and operators
-#     '''
-#     tech_ex = "".join([symb for symb in expression if not symb.isspace()])
-#     parsed_ex = re.split(r"([-,+,*,/,^,(,)])", tech_ex)  # except negative numbers
-#     return parsed_ex
-
 def parse_to_common(expression):
     '''
     Returns the list of strings, splited by numbers and operators, including brackets.
@@ -109,9 +95,6 @@ def parse_to_polish(expression):
         return False, None
 
     for i, token in enumerate(parsed_ex):
-        if not token:
-            continue
-
         if token in precedence:
             while (
                 operators
@@ -152,29 +135,6 @@ def parse_to_polish(expression):
 
     return True, output
 
-
-# def is_number(s):
-#     '''
-#     Returns the class of the number in string if there's a number, else returns False exit code.
-
-#             Parameters:
-#                     s (str): number in a string form or any other parsed string except operator
-
-#             Returns:
-#                     exit_code (bool): is string can be converted into the number
-#                     type (int, float, None): type of number in string
-#     '''
-#     # Int is:
-#     #  - Only numbers that do NOT start with 0 (protect padded number strings)
-#     #  - Exactly 0
-#     re_int = re.compile(r"(^[1-9]+\d*$|^0$)")
-#     is_int = re_int.match(s)
-#     # Float is:
-#     #  - Only numbers but with exactly 1 dot.
-#     #  - The dot must always be followed number numbers
-#     re_float = re.compile(r"(^\d+\.\d+$|^\.\d+$)")
-#     is_float = re_float.match(s)
-#     return (False, None) if not (is_int or is_float) else (True, int) if is_int else (True, float)
 
 def is_number(s):
     '''
@@ -286,43 +246,9 @@ def main():
                 return
             exit_code, result = calculate_polish(polish_expression)
 
-        print(f"Ответ: {result}")
+        print(f"Ответ: {round(result, 7)}")
 
 
 if __name__ == "__main__":
     main()
     print("Завершение программы.")
-
-"""
-(3 + 5) * 10 - 17*2
-46
-
-17.6 * 3^(12/3 - 0) + ((1 - 2) + 66/6))
-17.6 * 3^(12/3 - 0) + ((1 - 2) + 66/6)
-1435.6
-
-1+5-6+9
-9
-
-10-1-2-3-4-(0-1-2-3-4)+(0-1-2-3-4)
-0
-
-0-1-2-3-4
--10
-
--1-2-3-4
--10
-
--1 + (-2) + (-3) + (-4) * (-5 + 6)
--10
-
-print(is_number('17.6')[1]('17.6'))
-print(calculate_polish([1, 5, 6, 9, '+', '-', '+']))
-
-print(new_parse_to_common('(3 + 5) * 10 - 17*2'))
-print(new_parse_to_common('(3 + a) * 10 - 17*2'))
-print(new_parse_to_common('(3 +    5)  * 10 - 17^     2 * (-1 + 3)'))
-print(new_parse_to_common('(3 + 5) * 10 - 17*2 + 0.2345'))
-print(new_parse_to_common('(3 + 5) * 10 - 17*2 +.023'))
-print(new_parse_to_common('(3 + 5) * 10 - 17*2+-+-+-((()())()()())'))
-"""
