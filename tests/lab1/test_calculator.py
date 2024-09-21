@@ -1,9 +1,9 @@
 import unittest
 # import sys
 
-def parse_to_polish():
+def parse_to_polish(s):
     pass
-def calculate_polish():
+def calculate_polish(l):
     pass
 
 class CalculatorTestCase(unittest.TestCase):
