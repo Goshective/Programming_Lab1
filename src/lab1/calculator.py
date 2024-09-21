@@ -1,6 +1,20 @@
-import re
-from operator import add, sub, mul, truediv, pow
+# import re
+from operator import add, sub, mul, truediv, pow, neg
 
+
+# def parse_to_common(expression):
+#     '''
+#     Returns the list of strings, splited by numbers and operators, including brackets.
+
+#             Parameters:
+#                     expression (str): A math expression
+
+#             Returns:
+#                     parsed_ex (list[str]): list of numbers and operators
+#     '''
+#     tech_ex = "".join([symb for symb in expression if not symb.isspace()])
+#     parsed_ex = re.split(r"([-,+,*,/,^,(,)])", tech_ex)  # except negative numbers
+#     return parsed_ex
 
 def parse_to_common(expression):
     '''
@@ -10,11 +24,60 @@ def parse_to_common(expression):
                     expression (str): A math expression
 
             Returns:
+                    exit_code (bool): is expression converatble into list of str
                     parsed_ex (list[str]): list of numbers and operators
     '''
-    tech_ex = "".join([symb for symb in expression if not symb.isspace()])
-    parsed_ex = re.split(r"([-,+,*,/,^,(,)])", tech_ex)  # except negative numbers
-    return parsed_ex
+    def condition():
+        return (i != len(expression) - 1 and expression[i + 1].isnumeric()) \
+              and (parsed_ex and not parsed_ex[-1][-1].isnumeric() or not parsed_ex)
+
+    i = 0
+    number_parts = set('.0123456789')
+    operators = set('-+*/^()')
+    # prev = None
+    is_after_space = True
+    number_adding_mod = False
+    number_str = ''
+    parsed_ex = []
+    while i < len(expression):
+        s = expression[i]
+        if number_adding_mod and s not in number_parts:
+            number_adding_mod = False
+            parsed_ex.append(number_str)
+            number_str = ''
+        if s.isspace():
+            is_after_space = True
+            i += 1
+            continue
+
+        if s.isnumeric() or s == '.':
+            if not number_adding_mod:
+                number_adding_mod = True
+                if s == '.':
+                    return False, None
+
+            if s == '.' and '.' in number_str:
+                return False, None
+
+            if is_after_space and parsed_ex and parsed_ex[-1][-1].isnumeric():
+                return False, None # 3+10 15-6 : incorrect
+
+            number_str += s
+        elif s in operators:
+            if s == '-' and condition():
+                    number_adding_mod = True
+                    number_str += '-' + expression[i + 1]
+                    i += 1
+            else:
+                parsed_ex.append(s)
+        else:
+            return False, None # unrecognizable symbol
+        
+        is_after_space = False
+        i += 1
+    if number_adding_mod and number_str:
+        parsed_ex.append(number_str)
+    return True, parsed_ex
 
 
 def parse_to_polish(expression):
@@ -41,7 +104,9 @@ def parse_to_polish(expression):
     output = []
     operators = []
 
-    parsed_ex = parse_to_common(expression)
+    exit_code, parsed_ex = parse_to_common(expression)
+    if not exit_code:
+        return False, None
 
     for i, token in enumerate(parsed_ex):
         if not token:
@@ -88,6 +153,29 @@ def parse_to_polish(expression):
     return True, output
 
 
+# def is_number(s):
+#     '''
+#     Returns the class of the number in string if there's a number, else returns False exit code.
+
+#             Parameters:
+#                     s (str): number in a string form or any other parsed string except operator
+
+#             Returns:
+#                     exit_code (bool): is string can be converted into the number
+#                     type (int, float, None): type of number in string
+#     '''
+#     # Int is:
+#     #  - Only numbers that do NOT start with 0 (protect padded number strings)
+#     #  - Exactly 0
+#     re_int = re.compile(r"(^[1-9]+\d*$|^0$)")
+#     is_int = re_int.match(s)
+#     # Float is:
+#     #  - Only numbers but with exactly 1 dot.
+#     #  - The dot must always be followed number numbers
+#     re_float = re.compile(r"(^\d+\.\d+$|^\.\d+$)")
+#     is_float = re_float.match(s)
+#     return (False, None) if not (is_int or is_float) else (True, int) if is_int else (True, float)
+
 def is_number(s):
     '''
     Returns the class of the number in string if there's a number, else returns False exit code.
@@ -99,17 +187,16 @@ def is_number(s):
                     exit_code (bool): is string can be converted into the number
                     type (int, float, None): type of number in string
     '''
-    # Int is:
-    #  - Only numbers that do NOT start with 0 (protect padded number strings)
-    #  - Exactly 0
-    re_int = re.compile(r"(^[1-9]+\d*$|^0$)")
-    is_int = re_int.match(s)
-    # Float is:
-    #  - Only numbers but with exactly 1 dot.
-    #  - The dot must always be followed number numbers
-    re_float = re.compile(r"(^\d+\.\d+$|^\.\d+$)")
-    is_float = re_float.match(s)
-    return (False, None) if not (is_int or is_float) else (True, int) if is_int else (True, float)
+    try:
+        int(s)
+        return True, int
+    except:
+        try:
+            float(s)
+            return True, float
+        except:
+            return False, None
+    return False, None
 
 
 def is_operator(s):
@@ -137,7 +224,7 @@ def calculate_polish(p_ex):
                     res (float, int): final result of calculating RPN expression
     '''
     res_stack = []
-    dct_operations = {"+": add, "-": sub, "*": mul, "/": truediv, "^": pow}
+    dct_operations = {"+": add, "-": sub, "*": mul, "/": truediv, "^": pow, 'u-': neg}
     for obj in p_ex:
         if isinstance(obj, str):
             if res_stack:
@@ -223,6 +310,19 @@ if __name__ == "__main__":
 0-1-2-3-4
 -10
 
+-1-2-3-4
+-10
+
+-1 + (-2) + (-3) + (-4) * (-5 + 6)
+-10
+
 print(is_number('17.6')[1]('17.6'))
 print(calculate_polish([1, 5, 6, 9, '+', '-', '+']))
+
+print(new_parse_to_common('(3 + 5) * 10 - 17*2'))
+print(new_parse_to_common('(3 + a) * 10 - 17*2'))
+print(new_parse_to_common('(3 +    5)  * 10 - 17^     2 * (-1 + 3)'))
+print(new_parse_to_common('(3 + 5) * 10 - 17*2 + 0.2345'))
+print(new_parse_to_common('(3 + 5) * 10 - 17*2 +.023'))
+print(new_parse_to_common('(3 + 5) * 10 - 17*2+-+-+-((()())()()())'))
 """
