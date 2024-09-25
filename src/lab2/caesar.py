@@ -10,19 +10,19 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     >>> encrypt_caesar("")
     ''
     """
-    # list(map(chr, range(ord('a'), ord('z')+1)))
-    alph = "abcdefghijklmnopqrstuvwxyz"
-    alph_idx = {s: i for i, s in enumerate(alph)}
+    ord_a, ord_z, ord_A, ord_Z = 97, 122, 65, 90
     ciphertext = ""
     if not plaintext:
         return ciphertext
     shift = shift % 26
     for symb in plaintext:
-        if symb.lower() in alph_idx:
-            new_symb = alph[(alph_idx[symb.lower()] + shift) % 26]
-            ciphertext += new_symb if symb.islower() else new_symb.upper()
+        if ord_a <= ord(symb) <= ord_z:
+            new_symb = chr((ord(symb) - ord_a + shift) % 26 + ord_a)
+        elif ord_A <= ord(symb) <= ord_Z:
+            new_symb = chr((ord(symb) - ord_A + shift) % 26 + ord_A)
         else:
-            ciphertext += symb
+            new_symb = symb
+        ciphertext += new_symb
     return ciphertext
 
 
@@ -38,16 +38,17 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     >>> decrypt_caesar("")
     ''
     """
-    alph = "abcdefghijklmnopqrstuvwxyz"
-    alph_idx = {s: i for i, s in enumerate(alph)}
+    ord_a, ord_z, ord_A, ord_Z = 97, 122, 65, 90
     plaintext = ""
     if not ciphertext:
         return plaintext
     shift = shift % 26
     for symb in ciphertext:
-        if symb.lower() in alph_idx:
-            new_symb = alph[(alph_idx[symb.lower()] - shift) % 26]
-            plaintext += new_symb if symb.islower() else new_symb.upper()
+        if ord_a <= ord(symb) <= ord_z:
+            new_symb = chr((ord(symb) - ord_a - shift) % 26 + ord_a)
+        elif ord_A <= ord(symb) <= ord_Z:
+            new_symb = chr((ord(symb) - ord_A - shift) % 26 + ord_A)
         else:
-            plaintext += symb
+            new_symb = symb
+        plaintext += new_symb
     return plaintext
