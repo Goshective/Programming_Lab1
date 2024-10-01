@@ -10,8 +10,19 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     >>> encrypt_caesar("")
     ''
     """
+    ord_a, ord_z, ordZ, ordZ = 97, 122, 65, 90
     ciphertext = ""
-    # PUT YOUR CODE HERE
+    if not plaintext:
+        return ciphertext
+    shift = shift % 26
+    for symb in plaintext:
+        if ord_a <= ord(symb) <= ord_z:
+            new_symb = chr((ord(symb) - ord_a + shift) % 26 + ord_a)
+        elif ordZ <= ord(symb) <= ordZ:
+            new_symb = chr((ord(symb) - ordZ + shift) % 26 + ordZ)
+        else:
+            new_symb = symb
+        ciphertext += new_symb
     return ciphertext
 
 
@@ -27,6 +38,17 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     >>> decrypt_caesar("")
     ''
     """
+    ord_a, ord_z, ordZ, ordZ = 97, 122, 65, 90
     plaintext = ""
-    # PUT YOUR CODE HERE
+    if not ciphertext:
+        return plaintext
+    shift = shift % 26
+    for symb in ciphertext:
+        if ord_a <= ord(symb) <= ord_z:
+            new_symb = chr((ord(symb) - ord_a - shift) % 26 + ord_a)
+        elif ordZ <= ord(symb) <= ordZ:
+            new_symb = chr((ord(symb) - ordZ - shift) % 26 + ordZ)
+        else:
+            new_symb = symb
+        plaintext += new_symb
     return plaintext
