@@ -1,8 +1,9 @@
+import sys
+import os
 import unittest
-from src.lab2.caesar import encrypt_caesar, decrypt_caesar
 
 
-class CalculatorTestCase(unittest.TestCase):
+class CaesarTestCase(unittest.TestCase):
 
     def test_basic_encryption(self):
         self.assertEqual(encrypt_caesar(''), "")
@@ -31,4 +32,9 @@ class CalculatorTestCase(unittest.TestCase):
         self.assertEqual(decrypt_caesar('yz_300', -2), "ab_300")
 
 if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    src_dir = os.path.join(current_dir, '../..', 'src')
+    sys.path.insert(0, src_dir)
+
+    from lab2.caesar import encrypt_caesar, decrypt_caesar
     unittest.main()
