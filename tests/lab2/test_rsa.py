@@ -2,12 +2,11 @@ import sys
 import os
 import unittest
 
-if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    src_dir = os.path.join(current_dir, '../..', 'src')
-    sys.path.insert(0, src_dir)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')
+sys.path.insert(0, src_dir)
 
-    from lab2.rsa import is_prime, gcd, multiplicative_inverse
+from src.lab2.rsa import is_prime, gcd, multiplicative_inverse
 
 
 class RSATestCase(unittest.TestCase):

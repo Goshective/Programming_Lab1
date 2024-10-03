@@ -2,12 +2,11 @@ import sys
 import os
 import unittest
 
-if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    src_dir = os.path.join(current_dir, '../..', 'src')
-    sys.path.insert(0, src_dir)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')
+sys.path.insert(0, src_dir)
 
-    from lab2.caesar import encrypt_caesar, decrypt_caesar
+from src.lab2.caesar import encrypt_caesar, decrypt_caesar
 
 
 class CaesarTestCase(unittest.TestCase):
