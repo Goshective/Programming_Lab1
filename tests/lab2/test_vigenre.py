@@ -2,6 +2,13 @@ import sys
 import os
 import unittest
 
+if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    src_dir = os.path.join(current_dir, '../..', 'src')
+    sys.path.insert(0, src_dir)
+
+    from lab2.vigenre import encrypt_vigenere, decrypt_vigenere
+
 
 class VigenereTestCase(unittest.TestCase):
 
@@ -40,9 +47,4 @@ class VigenereTestCase(unittest.TestCase):
         self.assertEqual(decrypt_vigenere('aaarrraaa', '100'), "aaarrraaa")
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    src_dir = os.path.join(current_dir, '../..', 'src')
-    sys.path.insert(0, src_dir)
-
-    from lab2.vigenre import encrypt_vigenere, decrypt_vigenere
     unittest.main()

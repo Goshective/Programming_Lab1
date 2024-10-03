@@ -2,6 +2,13 @@ import sys
 import os
 import unittest
 
+if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    src_dir = os.path.join(current_dir, '../..', 'src')
+    sys.path.insert(0, src_dir)
+
+    from lab2.rsa import is_prime, gcd, multiplicative_inverse
+
 
 class RSATestCase(unittest.TestCase):
 
@@ -32,11 +39,5 @@ class RSATestCase(unittest.TestCase):
         self.assertEqual(multiplicative_inverse(3, 11), 4)
         self.assertEqual(multiplicative_inverse(2, 157), 79)
 
-
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    src_dir = os.path.join(current_dir, '../..', 'src')
-    sys.path.insert(0, src_dir)
-
-    from lab2.rsa import is_prime, gcd, multiplicative_inverse
     unittest.main()
