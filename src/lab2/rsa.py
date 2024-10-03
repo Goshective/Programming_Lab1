@@ -12,6 +12,8 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
+    if n <= 2:
+        return False
     for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:
             return False
@@ -121,7 +123,7 @@ if __name__ == "__main__":
     message = input("Enter a message to encrypt with your private key: ")
     encrypted_msg = encrypt(private, message)
     print("Your encrypted message is: ")
-    print("".join(map(lambda x: str(x), encrypted_msg)))
+    print(" ".join(map(lambda x: str(x), encrypted_msg)))
     print("Decrypting message with public key ", public, " . . .")
     print("Your message is:")
     print(decrypt(public, encrypted_msg))
