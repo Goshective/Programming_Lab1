@@ -12,7 +12,7 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
-    if n <= 2:
+    if n <= 1:
         return False
     for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:
@@ -41,9 +41,6 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # Ai, Bi, AmodBi, AdivBi, xi, yi = range(6)
-    # table = []
-
     m0 = phi
     y, x = 0, 1
 
