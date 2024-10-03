@@ -12,8 +12,12 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
-    # PUT YOUR CODE HERE
-    pass
+    if n <= 1:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
 
 
 def gcd(a: int, b: int) -> int:
@@ -24,8 +28,10 @@ def gcd(a: int, b: int) -> int:
     >>> gcd(3, 7)
     1
     """
-    # PUT YOUR CODE HERE
-    pass
+    a, b = max(a, b), min(a, b)
+    while a%b:
+        a, b = b, a % b
+    return b
 
 
 def multiplicative_inverse(e: int, phi: int) -> int:
@@ -35,8 +41,27 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+    m0 = phi
+    y, x = 0, 1
+
+    if phi == 1:
+        return 0
+
+    while e > 1:
+        q = e // phi
+        t = phi
+
+        phi = e % phi
+        e = t
+        t = y
+
+        y = x - q * y
+        x = t
+
+    if x < 0: # makes x positive
+        x += m0
+
+    return x
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
@@ -45,11 +70,9 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
     elif p == q:
         raise ValueError("p and q cannot be equal")
 
-    # n = pq
-    # PUT YOUR CODE HERE
+    n = p * q
 
-    # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
+    phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
@@ -97,7 +120,7 @@ if __name__ == "__main__":
     message = input("Enter a message to encrypt with your private key: ")
     encrypted_msg = encrypt(private, message)
     print("Your encrypted message is: ")
-    print("".join(map(lambda x: str(x), encrypted_msg)))
+    print(" ".join(map(lambda x: str(x), encrypted_msg)))
     print("Decrypting message with public key ", public, " . . .")
     print("Your message is:")
     print(decrypt(public, encrypted_msg))
