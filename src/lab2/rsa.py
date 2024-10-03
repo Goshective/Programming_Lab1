@@ -59,7 +59,7 @@ def multiplicative_inverse(e: int, phi: int) -> int:
         y = x - q * y
         x = t
 
-    if x < 0: # make x positive
+    if x < 0: # makes x positive
         x += m0
 
     return x
