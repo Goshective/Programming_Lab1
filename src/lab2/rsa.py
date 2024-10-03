@@ -39,8 +39,30 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+    # Ai, Bi, AmodBi, AdivBi, xi, yi = range(6)
+    # table = []
+
+    m0 = phi
+    y, x = 0, 1
+
+    if phi == 1:
+        return 0
+
+    while e > 1:
+        q = e // phi
+        t = phi
+
+        phi = e % phi
+        e = t
+        t = y
+
+        y = x - q * y
+        x = t
+
+    if x < 0: # make x positive
+        x += m0
+
+    return x
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
@@ -50,10 +72,8 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
         raise ValueError("p and q cannot be equal")
 
     n = p * q
-    # PUT YOUR CODE HERE
 
     phi = (p - 1) * (q - 1)
-    # PUT YOUR CODE HERE
 
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
