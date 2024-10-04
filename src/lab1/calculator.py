@@ -197,6 +197,8 @@ def calculate_polish(p_ex):
             else:
                 return False, None
 
+            if obj == '/' and not b:
+                return False, None
             res = dct_operations[obj](a, b)
             res_stack.append(res)
         else:
