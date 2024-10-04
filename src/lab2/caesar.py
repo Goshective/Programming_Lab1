@@ -10,7 +10,7 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     >>> encrypt_caesar("")
     ''
     """
-    ord_a, ord_z, ordZ, ordZ = 97, 122, 65, 90
+    ord_a, ord_z, ordA, ordZ = 97, 122, 65, 90
     ciphertext = ""
     if not plaintext:
         return ciphertext
@@ -18,8 +18,8 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     for symb in plaintext:
         if ord_a <= ord(symb) <= ord_z:
             new_symb = chr((ord(symb) - ord_a + shift) % 26 + ord_a)
-        elif ordZ <= ord(symb) <= ordZ:
-            new_symb = chr((ord(symb) - ordZ + shift) % 26 + ordZ)
+        elif ordA <= ord(symb) <= ordZ:
+            new_symb = chr((ord(symb) - ordA + shift) % 26 + ordA)
         else:
             new_symb = symb
         ciphertext += new_symb
@@ -38,7 +38,7 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     >>> decrypt_caesar("")
     ''
     """
-    ord_a, ord_z, ordZ, ordZ = 97, 122, 65, 90
+    ord_a, ord_z, ordA, ordZ = 97, 122, 65, 90
     plaintext = ""
     if not ciphertext:
         return plaintext
@@ -46,9 +46,20 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     for symb in ciphertext:
         if ord_a <= ord(symb) <= ord_z:
             new_symb = chr((ord(symb) - ord_a - shift) % 26 + ord_a)
-        elif ordZ <= ord(symb) <= ordZ:
-            new_symb = chr((ord(symb) - ordZ - shift) % 26 + ordZ)
+        elif ordA <= ord(symb) <= ordZ:
+            new_symb = chr((ord(symb) - ordA - shift) % 26 + ordA)
         else:
             new_symb = symb
         plaintext += new_symb
     return plaintext
+
+
+if __name__ == "__main__":
+    while True:
+        s = input("Введите текст: ")
+        i = input("Введите сдвиг: ")
+        while not i.isnumeric():
+            i = input("Введите сдвиг: ")
+        print("Зашифрованное сообщение:\n", encrypt_caesar(s, int(i)))
+        print("-------------------------")
+        print("Расшифрованное сообщение:\n", decrypt_caesar(s, int(i)))

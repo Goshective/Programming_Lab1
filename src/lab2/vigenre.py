@@ -53,3 +53,11 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
         shift = key_shift[i % mod_shift]
         plaintext += shift_symb_caesar(symb, -shift)
     return plaintext
+
+if __name__ == "__main__":
+    while True:
+        s = input("Введите текст: ")
+        key = input("Введите ключ: ")
+        print("Зашифрованное сообщение:\n", encrypt_vigenere(s, key))
+        print("-------------------------")
+        print("Расшифрованное сообщение:\n", decrypt_vigenere(s, key))
