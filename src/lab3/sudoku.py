@@ -1,3 +1,4 @@
+import os
 import pathlib
 import typing as tp
 
@@ -41,7 +42,8 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    pass
+    res = [[values[n * i + j] for j in range(n)] for i in range(n)]
+    return res
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -152,8 +154,9 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
 
 
 if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
-        grid = read_sudoku(fname)
+        grid = read_sudoku(os.path.join(current_dir, fname))
         display(grid)
         solution = solve(grid)
         if not solution:
