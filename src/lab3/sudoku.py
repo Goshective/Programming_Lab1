@@ -1,7 +1,10 @@
 import os
 import pathlib
 import typing as tp
+import multiprocessing
+
 from random import choice, randint
+import time
 
 T = tp.TypeVar("T")
 
@@ -226,16 +229,48 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     return fin_grid
 
 
+def run_solve(filename: str) -> None:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    grid = read_sudoku(os.path.join(current_dir, filename))
+
+    # display(grid)
+
+    start = time.time()
+    solution = solve(grid)
+    end = time.time()
+    if not solution:
+        print(f"Puzzle {filename} can't be solved")
+    else:
+        if check_solution(solution):
+            # display(solution)
+            print('...')
+        else:
+            print('Solution is not correct.')
+    print(f"{filename}: {end-start}")
+
+def run_multiprocess():
+    for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
+        p = multiprocessing.Process(target=run_solve, args=(filename,))
+        p.start()
+
 if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
-        grid = read_sudoku(os.path.join(current_dir, fname))
+    for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
+        grid = read_sudoku(os.path.join(current_dir, filename))
+
         display(grid)
+
+        start = time.time()
         solution = solve(grid)
+        end = time.time()
         if not solution:
-            print(f"Puzzle {fname} can't be solved")
+            print(f"Puzzle {filename} can't be solved")
         else:
             if check_solution(solution):
+                print(f"{filename}: {round(end-start, 5)} s")
+                print('...')
                 display(solution)
             else:
                 print('Solution is not correct.')
+
+    display(generate_sudoku(40))
