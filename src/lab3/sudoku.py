@@ -152,9 +152,26 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
-    """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
-    pass
+    """ Если решение solution верно, то вернуть True, в противном случае False 
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> check_solution(solve(grid))
+    True
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> grid[0][0] = '6'
+    >>> check_solution(solve(grid))
+    False
+    """
+
+    all_values = set('123456789')
+
+    for i in range(9):
+        row = set(get_row(solution, (i, 0)))
+        col = set(get_col(solution, (0, i)))
+        block = set(get_block(solution, (3 * (i // 3), 3 * (i % 3))))
+        if not (row == all_values and col == all_values and block == all_values):
+            return False
+    
+    return True
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
