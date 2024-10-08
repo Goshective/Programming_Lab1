@@ -221,9 +221,10 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
         if fin_grid:
             break
     
-    del_set = set(range(81))
+    del_lst = list(range(81))
     for _ in range(min(81, 81 - N)):
-        idx = del_set.pop()
+        idx = choice(del_lst)
+        del_lst.remove(idx)
         fin_grid[idx // 9][idx % 9] = "."
     
     return fin_grid
