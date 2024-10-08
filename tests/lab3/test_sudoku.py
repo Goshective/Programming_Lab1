@@ -15,7 +15,8 @@ from src.lab3.sudoku import (
     find_empty_positions,
     find_possible_values,
     solve,
-    check_solution
+    check_solution,
+    generate_sudoku
 )
 
 
@@ -72,6 +73,23 @@ class SudokuTestCase(unittest.TestCase):
         grid[0][0] = '5'
         grid[4][4] = '6'
         self.assertFalse(check_solution(grid))
+
+    def test_generate_sudoku(self):
+        grid = generate_sudoku(40)
+        self.assertEqual(sum(1 for row in grid for e in row if e == '.'), 41)
+        solution = solve(grid)
+        self.assertTrue(check_solution(solution))
+
+        grid = generate_sudoku(1000)
+        self.assertEqual(sum(1 for row in grid for e in row if e == '.'), 0)
+        solution = solve(grid)
+        self.assertTrue(check_solution(solution))
+
+        grid = generate_sudoku(0)
+        self.assertEqual(sum(1 for row in grid for e in row if e == '.'), 81)
+        solution = solve(grid)
+        self.assertTrue(check_solution(solution))
+
 
 if __name__ == "__main__":
     unittest.main()

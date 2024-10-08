@@ -1,6 +1,7 @@
 import os
 import pathlib
 import typing as tp
+from random import choice, randint
 
 T = tp.TypeVar("T")
 
@@ -195,7 +196,34 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    pass
+    while True:
+        grid = [['.' for _ in range(9)] for _ in range(9)]
+        rand_set = set('123456789')
+        for i in range(9):
+            grid[i][randint(0, 8)] = rand_set.pop()
+        for i in range(3 * 9):
+            while True:
+                idx = choice(list(range(81)))
+                y, x = idx // 9, idx % 9
+                if grid[y][x] != ".":
+                    continue
+                values = find_possible_values(grid, (y, x))
+                if not values:
+                    continue
+                grid[y][x] = values.pop()
+                break
+
+
+        fin_grid = solve(grid)
+        if fin_grid:
+            break
+    
+    del_set = set(range(81))
+    for _ in range(min(81, 81 - N)):
+        idx = del_set.pop()
+        fin_grid[idx // 9][idx % 9] = "."
+    
+    return fin_grid
 
 
 if __name__ == "__main__":
@@ -207,4 +235,7 @@ if __name__ == "__main__":
         if not solution:
             print(f"Puzzle {fname} can't be solved")
         else:
-            display(solution)
+            if check_solution(solution):
+                display(solution)
+            else:
+                print('Solution is not correct.')
