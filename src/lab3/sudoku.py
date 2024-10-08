@@ -274,4 +274,8 @@ if __name__ == "__main__":
             else:
                 print('Solution is not correct.')
 
-    display(generate_sudoku(40))
+    FILL_N = 40
+    print(f"SUDOKU WITH {FILL_N} elements")
+    display(generate_sudoku(FILL_N))
+
+    run_multiprocess()
