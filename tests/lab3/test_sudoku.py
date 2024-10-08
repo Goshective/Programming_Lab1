@@ -13,6 +13,7 @@ from src.lab3.sudoku import (
     get_col, 
     get_block, 
     find_empty_positions,
+    find_possible_values,
 )
 
 
@@ -44,6 +45,13 @@ class SudokuTestCase(unittest.TestCase):
         self.assertEqual(find_empty_positions([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']]), (0, 2))
         self.assertEqual(find_empty_positions([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']]), (1, 1))
         self.assertEqual(find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']]), (2, 0))
+
+    def test_find_possible(self):
+        grid = read_sudoku('src/lab3/puzzle1.txt')
+
+        self.assertEqual(find_possible_values(grid, (0,2)), {'1', '2', '4'})
+        self.assertEqual(find_possible_values(grid, (4,7)), {'2', '5', '9'})
+
 
 if __name__ == "__main__":
     unittest.main()
