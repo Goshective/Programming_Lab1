@@ -1,6 +1,8 @@
 import sys
 import os
 import unittest
+import random
+import string
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_dir = os.path.join(current_dir, '..', '..')
@@ -44,6 +46,13 @@ class VigenereTestCase(unittest.TestCase):
         self.assertEqual(decrypt_vigenere('bc_200', 'bb_cde'), "ab_200")
         self.assertEqual(decrypt_vigenere('ya_300', 'yz'), "ab_300")
         self.assertEqual(decrypt_vigenere('aaarrraaa', '100'), "aaarrraaa")
+
+    def test_randomized(self):
+        kwlen = random.randint(4, 24)
+        keyword = ''.join(random.choice(string.ascii_letters) for _ in range(kwlen))
+        plaintext = ''.join(random.choice(string.ascii_letters + ' -,') for _ in range(64))
+        ciphertext = encrypt_vigenere(plaintext, keyword)
+        self.assertEqual(plaintext, decrypt_vigenere(ciphertext, keyword))
 
 if __name__ == "__main__":
     unittest.main()
