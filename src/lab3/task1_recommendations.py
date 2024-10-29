@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Set
+from typing import Tuple, Set, List
 
 
 FILMS_FILENAME = "films.txt"
@@ -8,7 +8,7 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 
 
 class User:
-    def __init__(self, user_id, views):
+    def __init__(self, user_id: int, views: list[int]):
         self.user_id = user_id
         self.views = views
         self.unique_views = set(views)
@@ -17,8 +17,13 @@ class User:
         res = self.unique_views & user.unique_views
         return (2 * len(res) >= len(self.unique_views), res)
     
-    def get_recommendation(self, unique_views: set):
+    def get_recommendation(self, unique_views: set) -> Set[int]:
         return self.unique_views - unique_views
+    
+    def add_films_views(self, film_ids: dict[int, int]) -> None:
+        for film_id in self.views:
+            if film_id in film_ids:
+                film_ids[film_id] += 1
 
 
 class UsersLibrary:
@@ -30,10 +35,10 @@ class UsersLibrary:
         self.users.append(user)
         self.last_user_id = user.user_id
 
-    def get_users(self):
+    def get_users(self) -> List[User]:
         return self.users
     
-    def get_last_user_id(self):
+    def get_last_user_id(self) -> int:
         return self.last_user_id
     
 
@@ -41,9 +46,14 @@ class FilmsLibrary:
     def __init__(self, filmnames: dict):
         self.filmnames = filmnames
 
-    def add_film(self, id, name):
-        if id not in self.filmnames:
-            self.filmnames[id] = name
+    def add_film(self, film_id, name):
+        if film_id not in self.filmnames:
+            self.filmnames[film_id] = name
+
+    def get_film(self, film_id):
+        if film_id in self.filmnames:
+            return self.filmnames[film_id]
+        return None
 
 
 def read_views(path):
@@ -90,4 +100,13 @@ if __name__ == "__main__":
         if is_in_common:
             recommendation_films |= user.get_recommendation(common_views)
     
-    print(recommendation_films)
+    recommendation_films_count = {film_id: 0 for film_id in recommendation_films}
+
+    for user in views_library.get_users():
+        user.add_films_views(recommendation_films_count)
+
+    max_views_count = max(recommendation_films_count.values())
+    for film_id, views_count in recommendation_films_count.items():
+        if views_count == max_views_count:
+            print(films_library.get_film(film_id))
+            break
