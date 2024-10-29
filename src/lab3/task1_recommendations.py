@@ -1,20 +1,10 @@
 import os
+from typing import Tuple, Set
 
 
 FILMS_FILENAME = "films.txt"
-VIEWS_FILENAME = "films.txt"
+VIEWS_FILENAME = "views.txt"
 PATH = os.path.dirname(os.path.abspath(__file__))
-
-
-class UsersLibrary:
-    def __init__(self):
-        self.users = []
-
-    def add_user(self, user):
-        self.users.append(user)
-
-    def get_users(self):
-        return self.users
 
 
 class User:
@@ -23,12 +13,28 @@ class User:
         self.views = views
         self.unique_views = set(views)
     
-    def are_views_in_common(self, unique_views):
-        res = self.unique_views & unique_views
-        return 2 * len(res) >= len(self.unique_views), res
+    def are_views_in_common(self, user: 'User') -> Tuple[bool, Set[int]]:
+        res = self.unique_views & user.unique_views
+        return (2 * len(res) >= len(self.unique_views), res)
     
-    def get_recommendation(self, unique_views):
+    def get_recommendation(self, unique_views: set):
         return self.unique_views - unique_views
+
+
+class UsersLibrary:
+    def __init__(self):
+        self.users = []
+        self.last_user_id = None
+
+    def add_user(self, user: User):
+        self.users.append(user)
+        self.last_user_id = user.user_id
+
+    def get_users(self):
+        return self.users
+    
+    def get_last_user_id(self):
+        return self.last_user_id
     
 
 class FilmsLibrary:
@@ -42,8 +48,8 @@ class FilmsLibrary:
 
 def read_views(path):
     users = UsersLibrary()
-    with open(path, 'r') as file:
-        for user_id, line in enumerate(file.readlines):
+    with open(path, 'r', encoding='utf-8') as file:
+        for user_id, line in enumerate(file.readlines()):
             views = [int(film_id) for film_id in line.rstrip().split(',')]
             users.add_user(User(user_id, views))
     return users
@@ -51,8 +57,8 @@ def read_views(path):
 
 def read_films(path):
     filmnames = {}
-    with open(path, 'r') as file:
-        for line in file.readlines:
+    with open(path, 'r', encoding='utf-8') as file:
+        for line in file.readlines():
             idx, name = line.rstrip().split(',')
             filmnames[int(idx)] = name
     return FilmsLibrary(filmnames)
@@ -71,6 +77,17 @@ if __name__ == "__main__":
             break
         else:
             print('Некорректный ввод.')
+
     films_library = read_films(films_path)
     views_library = read_views(views_path)
+
+    cur_user_id = views_library.get_last_user_id() + 1
+    cur_user = User(cur_user_id, cur_views)
+
+    recommendation_films = set()
+    for user in views_library.get_users():
+        is_in_common, common_views = user.are_views_in_common(cur_user)
+        if is_in_common:
+            recommendation_films |= user.get_recommendation(common_views)
     
+    print(recommendation_films)
