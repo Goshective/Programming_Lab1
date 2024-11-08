@@ -13,17 +13,19 @@ class User:
         self.views = views
         self.unique_views = set(views)
     
-    def are_views_in_common(self, user: 'User') -> Tuple[bool, Set[int]]:
+    def are_views_in_common(self, user: 'User') -> Tuple[float, Set[int]]:
         res = self.unique_views & user.unique_views
-        return (2 * len(res) >= len(self.unique_views), res)
+        return (len(res) / len(user.unique_views), res)
     
     def get_recommendation(self, unique_views: set) -> Set[int]:
         return self.unique_views - unique_views
     
-    def add_films_views(self, film_ids: dict[int, int]) -> None:
-        for film_id in self.views:
-            if film_id in film_ids:
-                film_ids[film_id] += 1
+    def add_films_views(self, film_ids: dict[int, float]) -> None:
+        if self.user_id in userid_coeff:
+            coeff = userid_coeff[self.user_id]
+            for film_id in self.views:
+                if film_id in film_ids:
+                    film_ids[film_id] += coeff
 
 
 class UsersLibrary:
@@ -95,12 +97,14 @@ if __name__ == "__main__":
     cur_user = User(cur_user_id, cur_views)
 
     recommendation_films = set()
+    userid_coeff = {}
     for user in views_library.get_users():
-        is_in_common, common_views = user.are_views_in_common(cur_user)
-        if is_in_common:
+        common_coeff, common_views = user.are_views_in_common(cur_user)
+        if common_coeff:
             recommendation_films |= user.get_recommendation(common_views)
+            userid_coeff[user.user_id] = common_coeff
     
-    recommendation_films_count = {film_id: 0 for film_id in recommendation_films}
+    recommendation_films_count = {film_id: 0.0 for film_id in recommendation_films}
 
     for user in views_library.get_users():
         user.add_films_views(recommendation_films_count)
