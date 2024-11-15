@@ -5,4 +5,5 @@ A A C, 19
 A B A, 36
 A B B, 45
 A B C, 81
+A C C, 81
 END
