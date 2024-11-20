@@ -6,4 +6,8 @@ A B A, 36
 A B B, 45
 A B C, 81
 A C C, 81
+Z A C, 82
+N N N, 124
+N N A, 0
+N N N, -1
 END
