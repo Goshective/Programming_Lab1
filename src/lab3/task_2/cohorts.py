@@ -71,7 +71,9 @@ def parse_args(args):
             res.append(int(arg))
         else:
             return None
-    return res
+    if res == list(sorted(res)):
+        return res
+    return None
 
 
 def read_data_file(path):
@@ -102,9 +104,9 @@ def read_data_args(args):
 
 def main():
     args = sys.argv
-    is_command = args[0] == "cohorts.py"
+    is_command = args[0][-10:] == "cohorts.py"
     parsed_args = parse_args(args)
-    if args is None:
+    if parsed_args is None:
         print("Некорректные аргументы")
         exit(0)
 
