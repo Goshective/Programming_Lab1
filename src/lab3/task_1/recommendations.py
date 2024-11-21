@@ -15,7 +15,7 @@ class User:
     
     def are_views_in_common(self, user: 'User') -> Tuple[float, Set[int]]:
         res = self.unique_views & user.unique_views
-        return (len(res) / len(user.unique_views), res)
+        return (len(res) == 0, len(res) / len(self.unique_views), res)
     
     def get_recommendation(self, unique_views: set) -> Set[int]:
         return self.unique_views - unique_views
@@ -39,6 +39,9 @@ class UsersLibrary:
 
     def get_users(self) -> List[User]:
         return self.users
+    
+    def get_number_of_user(self) -> int:
+        return len(self.users)
     
     def get_last_user_id(self) -> int:
         return self.last_user_id
@@ -99,8 +102,8 @@ if __name__ == "__main__":
     recommendation_films = set()
     userid_coeff = {}
     for user in views_library.get_users():
-        common_coeff, common_views = user.are_views_in_common(cur_user)
-        if common_coeff:
+        is_empty, common_coeff, common_views = cur_user.are_views_in_common(user)
+        if not is_empty:
             recommendation_films |= user.get_recommendation(common_views)
             userid_coeff[user.user_id] = common_coeff
     
@@ -110,7 +113,12 @@ if __name__ == "__main__":
         user.add_films_views(recommendation_films_count)
 
     max_views_count = max(recommendation_films_count.values())
+    number_of_users = views_library.get_number_of_user()
     for film_id, views_count in recommendation_films_count.items():
         if views_count == max_views_count:
+            print("-"*30)
+            print("Наиболее подходящий фильм:")
             print(films_library.get_film(film_id))
+            print("Коэффициент:", round(recommendation_films_count[film_id] / number_of_users, 4))
+            print("-"*30)
             break
