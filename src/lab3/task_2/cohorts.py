@@ -42,6 +42,11 @@ class Cohorts:
             key = self.cohorts[idx-1]
         self.distribution[key].append(respondent)
 
+    def get_cohort(self, key):
+        if key in self.distribution:
+            return self.distribution[key]
+        return []
+
     def print(self, output_file=None) -> None:
         age_ranges = self.cohorts[::-1]
         if output_file is None:
@@ -104,7 +109,7 @@ def read_data_args(args):
 
 def main():
     args = sys.argv
-    is_command = args[0][-10:] == "cohorts.py"
+    is_command = args[0][-10:] == "cohorts.py" and len(args) >= 2
     parsed_args = parse_args(args)
     if parsed_args is None:
         print("Некорректные аргументы")
