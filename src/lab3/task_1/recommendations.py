@@ -12,20 +12,14 @@ class User:
         self.user_id = user_id
         self.views = views
         self.unique_views = set(views)
+        self.cur_user_coeff = 0
     
-    def are_views_in_common(self, user: 'User') -> Tuple[float, Set[int]]:
+    def are_views_in_common(self, user: 'User') -> Tuple[bool, float, Set[int]]:
         res = self.unique_views & user.unique_views
         return (len(res) == 0, len(res) / len(self.unique_views), res)
     
     def get_recommendation(self, unique_views: set) -> Set[int]:
         return self.unique_views - unique_views
-    
-    def add_films_views(self, film_ids: dict[int, float]) -> None:
-        if self.user_id in userid_coeff:
-            coeff = userid_coeff[self.user_id]
-            for film_id in self.views:
-                if film_id in film_ids:
-                    film_ids[film_id] += coeff
 
 
 class UsersLibrary:
@@ -45,6 +39,15 @@ class UsersLibrary:
     
     def get_last_user_id(self) -> int:
         return self.last_user_id
+    
+    def add_films_coefficients(self, film_ids: dict[int, float]) -> None:
+        for user in self.users:
+            if user.cur_user_coeff:
+                coeff = user.cur_user_coeff
+                for film_id in user.unique_views:
+                    if film_id in film_ids:
+                        film_ids[film_id] += coeff
+
     
 
 class FilmsLibrary:
@@ -100,17 +103,15 @@ if __name__ == "__main__":
     cur_user = User(cur_user_id, cur_views)
 
     recommendation_films = set()
-    userid_coeff = {}
     for user in views_library.get_users():
         is_empty, common_coeff, common_views = cur_user.are_views_in_common(user)
         if not is_empty:
             recommendation_films |= user.get_recommendation(common_views)
-            userid_coeff[user.user_id] = common_coeff
+            user.cur_user_coeff = common_coeff
     
     recommendation_films_count = {film_id: 0.0 for film_id in recommendation_films}
 
-    for user in views_library.get_users():
-        user.add_films_views(recommendation_films_count)
+    views_library.add_films_coefficients(recommendation_films_count)
 
     max_views_count = max(recommendation_films_count.values())
     number_of_users = views_library.get_number_of_user()
