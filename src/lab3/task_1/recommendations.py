@@ -18,7 +18,7 @@ class User:
         res = self.unique_views & user.unique_views
         return (len(res) == 0, len(res) / len(self.unique_views), res)
     
-    def get_recommendation(self, unique_views: set) -> Set[int]:
+    def get_difference(self, unique_views: set) -> Set[int]:
         return self.unique_views - unique_views
 
 
