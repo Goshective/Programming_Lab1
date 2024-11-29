@@ -1,0 +1,13 @@
+18 25 35 45 60 80 100
+A A A, 18
+A A B, 8
+A A C, 19
+A B A, 36
+A B B, 45
+A B C, 81
+A C C, 81
+Z A C, 82
+N N N, 124
+N N A, 0
+N N N, -1
+END
