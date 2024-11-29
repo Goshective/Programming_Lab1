@@ -106,7 +106,7 @@ if __name__ == "__main__":
     for user in views_library.get_users():
         is_empty, common_coeff, common_views = cur_user.are_views_in_common(user)
         if not is_empty:
-            recommendation_films |= user.get_recommendation(common_views)
+            recommendation_films |= user.get_difference(common_views)
             user.cur_user_coeff = common_coeff
     
     recommendation_films_count = {film_id: 0.0 for film_id in recommendation_films}
