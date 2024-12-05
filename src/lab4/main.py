@@ -59,7 +59,7 @@ class OrderParsing:
 
         row['Набор продуктов'] = OrderParsing.generate_products_string(products_amount)
 
-    def product_sorting_function(product):
+    def orders_sorting_function(product):
         country = product['Адрес доставки'].split('. ')[0]
         if country.lower() in ('россия', 'российская федерация'):
             # make the lowest for sorting
@@ -121,7 +121,7 @@ def main():
             OrderParsing.update_row_info(row)
             orders_list.append(row)
 
-    orders_list.sort(key=OrderParsing.product_sorting_function)
+    orders_list.sort(key=OrderParsing.orders_sorting_function)
 
     FileManager.write_errors(not_valid_list)
     FileManager.write_orders(orders_list)
