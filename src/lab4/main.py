@@ -49,8 +49,13 @@ class OrderParsing:
 
     def update_row_info(row):
         products_amount = {}
+        keys = []
         for product_name in row['Набор прродуктов'].split(', '):
-            products_amount[product_name] = products_amount.get(product_name, 0) + 1
+            if product_name not in products_amount:
+                products_amount[product_name] = 1
+                keys.append(product_name)
+            else:
+                products_amount[product_name] += 1
 
         row['Набор прродуктов'] = OrderParsing.generate_products_string(products_amount)
 
@@ -75,10 +80,25 @@ class FileManager:
             return all_orders_list
         
     def write_errors(not_valid_list):
-        headers = ['Номер заказа', 'Тип ошибки', 'Значение атрибута с ошибкой']
+        with open(os.path.join(PATH, ERROR_FILENAME), 'w', encoding='utf-8') as out_file:
+            headers = ['Номер заказа', 'Тип ошибки', 'Значение атрибута с ошибкой']
+            writer = csv.DictWriter(out_file, fieldnames=headers, delimiter=';')
+
+            writer.writeheader()
+            for row in not_valid_list:
+                writer.writerow({'Номер заказа': row[0], 
+                                 'Тип ошибки': row[1], 
+                                 'Значение атрибута с ошибкой': row[2]}
+                                 )
 
     def write_orders(parsed_orders_list):
-        headers = ['Номер заказа', 'Набор прродуктов', 'ФИО заказчика', 'Адрес доставки', 'Номер телефона', 'Приоритет доставки']
+        with open(os.path.join(PATH, OUPUT_FILENAME), 'w', encoding='utf-8') as out_file:
+            headers = ['Номер заказа', 'Набор прродуктов', 'ФИО заказчика', 'Адрес доставки', 'Номер телефона', 'Приоритет доставки']
+            writer = csv.DictWriter(out_file, fieldnames=headers, delimiter=';')
+
+            writer.writeheader()
+            for row in parsed_orders_list:
+                writer.writerow(row)
 
 
 def main():
@@ -88,20 +108,20 @@ def main():
     for row in all_orders_list:
         address_code, address_error_string = Validation.is_valid_address(row)
         if address_code == 1:
-            not_valid_list.append((row['Номер заказа'], address_error_string))
+            not_valid_list.append((row['Номер заказа'], address_code, address_error_string))
 
         phone_code, phone_error_string = Validation.is_valid_phone(row)
         if phone_code == 2:
-            not_valid_list.append((row['Номер заказа'], phone_error_string))
+            not_valid_list.append((row['Номер заказа'], phone_code, phone_error_string))
 
-        if address_code == 0 and phone_code == 0:
+        elif address_code == 0 and phone_code == 0:
             OrderParsing.update_row_info(row)
             orders_list.append(row)
 
     orders_list.sort(key=OrderParsing.product_sorting_function)
 
-    print(not_valid_list)
-    print(*orders_list, sep="\n")
+    FileManager.write_errors(not_valid_list)
+    FileManager.write_orders(orders_list)
 
 
 if __name__ == "__main__":
