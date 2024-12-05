@@ -50,14 +50,14 @@ class OrderParsing:
     def update_row_info(row):
         products_amount = {}
         keys = []
-        for product_name in row['Набор прродуктов'].split(', '):
+        for product_name in row['Набор продуктов'].split(', '):
             if product_name not in products_amount:
                 products_amount[product_name] = 1
                 keys.append(product_name)
             else:
                 products_amount[product_name] += 1
 
-        row['Набор прродуктов'] = OrderParsing.generate_products_string(products_amount)
+        row['Набор продуктов'] = OrderParsing.generate_products_string(products_amount)
 
     def product_sorting_function(product):
         country = product['Адрес доставки'].split('. ')[0]
@@ -74,7 +74,7 @@ class OrderParsing:
 class FileManager:
     def read_file():
         with open(os.path.join(PATH, INPUT_FILENAME), 'r', encoding='utf-8') as input_file:
-            # Номер заказа, Набор прродуктов, ФИО заказчика, Адрес доставки, Номер телефона, Приоритет доставки
+            # Номер заказа, Набор продуктов, ФИО заказчика, Адрес доставки, Номер телефона, Приоритет доставки
             reader = csv.DictReader(input_file, delimiter=";")
             all_orders_list = []
             for row in reader:
@@ -96,7 +96,7 @@ class FileManager:
 
     def write_orders(parsed_orders_list):
         with open(os.path.join(PATH, OUPUT_FILENAME), 'w', encoding='utf-8') as out_file:
-            headers = ['Номер заказа', 'Набор прродуктов', 'ФИО заказчика', 'Адрес доставки', 'Номер телефона', 'Приоритет доставки']
+            headers = ['Номер заказа', 'Набор продуктов', 'ФИО заказчика', 'Адрес доставки', 'Номер телефона', 'Приоритет доставки']
             writer = csv.DictWriter(out_file, fieldnames=headers, delimiter=';')
 
             writer.writeheader()
