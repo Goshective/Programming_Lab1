@@ -61,6 +61,9 @@ class OrderParsing:
 
     def product_sorting_function(product):
         country = product['Адрес доставки'].split('. ')[0]
+        if country.lower() in ('россия', 'российская федерация'):
+            # make the lowest for sorting
+            country = "А"
         priorities = {"MAX": 0, "MIDDLE": 1, "LOW": 2}
         priority = priorities[product['Приоритет доставки']]
         return (country, priority)
