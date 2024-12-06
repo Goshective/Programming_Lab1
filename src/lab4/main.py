@@ -82,11 +82,11 @@ def main():
     for row in all_orders_list:
         address_code, address_error_string = Validation.is_valid_address(row)
         if address_code == 1:
-            not_valid_list.append((row['Номер заказа'], address_code, address_error_string))
+            not_valid_list.append((row[ID_NAME], address_code, address_error_string))
 
         phone_code, phone_error_string = Validation.is_valid_phone(row)
         if phone_code == 2:
-            not_valid_list.append((row['Номер заказа'], phone_code, phone_error_string))
+            not_valid_list.append((row[ID_NAME], phone_code, phone_error_string))
 
         elif address_code == 0 and phone_code == 0:
             OrderParsing.update_row_info(row)
