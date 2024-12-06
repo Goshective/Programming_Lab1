@@ -7,6 +7,8 @@ OUPUT_FILENAME = "order_country.txt"
 ERROR_FILENAME = "non_valid_orders.txt"
 PATH = os.path.dirname(os.path.abspath(__file__))
 
+INPUT_HEADERS = ['Номер заказа', 'Набор продуктов', 'ФИО заказчика', 'Адрес доставки', 'Номер телефона', 'Приоритет доставки']
+
 
 class FileManager:
     def read_file():
@@ -33,8 +35,7 @@ class FileManager:
 
     def write_orders(parsed_orders_list):
         with open(os.path.join(PATH, OUPUT_FILENAME), 'w', encoding='utf-8') as out_file:
-            headers = ['Номер заказа', 'Набор продуктов', 'ФИО заказчика', 'Адрес доставки', 'Номер телефона', 'Приоритет доставки']
-            writer = csv.DictWriter(out_file, fieldnames=headers, delimiter=';')
+            writer = csv.DictWriter(out_file, fieldnames=INPUT_HEADERS, delimiter=';')
 
             writer.writeheader()
             for row in parsed_orders_list:

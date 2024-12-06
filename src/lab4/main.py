@@ -5,21 +5,27 @@ import sys
 PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PATH)
 
-from file_utils import FileManager
+from file_utils import FileManager, INPUT_HEADERS
+
+ID_NAME = INPUT_HEADERS[0]
+PRODUCTS_NAME = INPUT_HEADERS[1]
+ADDRESS_NAME = INPUT_HEADERS[3]
+PHONE_NAME = INPUT_HEADERS[4]
+PRIORITY_NAME = INPUT_HEADERS[5]
 
 
 class Validation:
     def is_valid_address(row):
-        if not row['Адрес доставки']:
+        if not row[ADDRESS_NAME]:
             return 1, "no data"
-        parsed_address = row['Адрес доставки'].split('. ')
+        parsed_address = row[ADDRESS_NAME].split('. ')
         if len(parsed_address) != 4:
-            return 1, row['Адрес доставки']
+            return 1, row[ADDRESS_NAME]
         return 0, None
     
     def is_valid_phone(row):
         template = "+x-xxx-xxx-xx-xx"
-        phone = row['Номер телефона']
+        phone = row[PHONE_NAME]
         if len(phone) == 0:
             return 2, "no data"
         if len(phone) != len(template):
@@ -50,22 +56,22 @@ class OrderParsing:
     def update_row_info(row):
         products_amount = {}
         keys = []
-        for product_name in row['Набор продуктов'].split(', '):
+        for product_name in row[PRODUCTS_NAME].split(', '):
             if product_name not in products_amount:
                 products_amount[product_name] = 1
                 keys.append(product_name)
             else:
                 products_amount[product_name] += 1
 
-        row['Набор продуктов'] = OrderParsing.generate_products_string(products_amount)
+        row[PRODUCTS_NAME] = OrderParsing.generate_products_string(products_amount)
 
     def orders_sorting_function(product):
-        country = product['Адрес доставки'].split('. ')[0]
+        country = product[ADDRESS_NAME].split('. ')[0]
         if country.lower() in ('россия', 'российская федерация'):
             # make the lowest for sorting
             country = "А"
         priorities = {"MAX": 0, "MIDDLE": 1, "LOW": 2}
-        priority = priorities[product['Приоритет доставки']]
+        priority = priorities[product[PRIORITY_NAME]]
         return (country, priority)
 
 
