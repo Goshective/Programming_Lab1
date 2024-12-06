@@ -15,7 +15,20 @@ PRIORITY_NAME = INPUT_HEADERS[5]
 
 
 class Validation:
+    '''
+    Contains functions for validation of address and phone in the orders
+    '''
     def is_valid_address(row):
+        '''
+        Validates address in order 
+
+            Parameters:
+                    row (dict[str, str]): order to check
+
+            Returns:
+                    address_code (int): 2 if address is wrong, otherwise - 0
+                    address_error_string (str): wrong address from order or None if there is no mistakes
+        '''
         if not row[ADDRESS_NAME]:
             return 1, "no data"
         parsed_address = row[ADDRESS_NAME].split('. ')
@@ -24,6 +37,16 @@ class Validation:
         return 0, None
     
     def is_valid_phone(row):
+        '''
+        Validates phone number in order
+
+            Parameters:
+                    row (dict[str, str]): order to check
+
+            Returns:
+                    phone_code (int): 2 if phone number is wrong, otherwise - 0
+                    phone_error_string (str): wrong phone number from order or None if there is no mistakes
+        '''
         template = "+x-xxx-xxx-xx-xx"
         phone = row[PHONE_NAME]
         if len(phone) == 0:
@@ -40,7 +63,19 @@ class Validation:
 
 
 class OrderParsing:
+    '''
+    Contains functions to work with orders (sort and update)
+    '''
     def generate_products_string(products_amount):
+        '''
+        Generate simplified string in products column of order 
+
+            Parameters:
+                    products_amount (dict[str, int]): distribution of product names
+
+            Returns:
+                    res (str): string in format (A x2, B, C x105, e.t.c)
+        '''
         res = []
         product_names = products_amount.keys()
         for name in sorted(product_names):
@@ -54,6 +89,15 @@ class OrderParsing:
         
 
     def update_row_info(row):
+        '''
+        Counts distribution of product names and updates row 
+
+            Parameters:
+                    row (dict[str, str]): order to update
+
+            Returns:
+                    None
+        '''
         products_amount = {}
         keys = []
         for product_name in row[PRODUCTS_NAME].split(', '):
@@ -65,17 +109,29 @@ class OrderParsing:
 
         row[PRODUCTS_NAME] = OrderParsing.generate_products_string(products_amount)
 
-    def orders_sorting_function(product):
-        country = product[ADDRESS_NAME].split('. ')[0]
+    def orders_sorting_function(order):
+        '''
+        Generates possible-to-compare tuple from order data
+
+            Parameters:
+                    row (dict[str, str]): order to compare
+
+            Returns:
+                    country (str): Country name for lexicographic compare
+                    priority (int): Priority of order in terms of (LOW, MIDDLE, MAX)
+        '''
+        country = order[ADDRESS_NAME].split('. ')[0]
         if country.lower() in ('россия', 'российская федерация'):
             # make the lowest for sorting
             country = "А"
         priorities = {"MAX": 0, "MIDDLE": 1, "LOW": 2}
-        priority = priorities[product[PRIORITY_NAME]]
+        priority = priorities[order[PRIORITY_NAME]]
         return (country, priority)
 
 
 def main():
+    '''Manages the main loop of program and calling functions'''
+
     not_valid_list = []
     orders_list = []
     all_orders_list = FileManager.read_file()

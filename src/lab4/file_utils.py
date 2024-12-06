@@ -11,7 +11,19 @@ INPUT_HEADERS = ['Номер заказа', 'Набор продуктов', 'Ф
 
 
 class FileManager:
+    '''
+    Contains functions to read and write from all the files programme working with 
+    '''
     def read_file():
+        '''
+        Reads input file 
+
+            Parameters:
+                    None
+
+            Returns:
+                    all_orders_list (list[dict[str, str]]): the list of all rows to work with
+        '''
         with open(os.path.join(PATH, INPUT_FILENAME), 'r', encoding='utf-8') as input_file:
             # Номер заказа, Набор продуктов, ФИО заказчика, Адрес доставки, Номер телефона, Приоритет доставки
             reader = csv.DictReader(input_file, delimiter=";")
@@ -22,6 +34,15 @@ class FileManager:
             return all_orders_list
         
     def write_errors(not_valid_list):
+        '''
+        Writes error-output file 
+
+            Parameters:
+                    not_valid_list (list[tuple[str]]]): list of tuples with information about not valid orders
+
+            Returns:
+                    None
+        '''
         with open(os.path.join(PATH, ERROR_FILENAME), 'w', encoding='utf-8') as out_file:
             headers = ['Номер заказа', 'Тип ошибки', 'Значение атрибута с ошибкой']
             writer = csv.DictWriter(out_file, fieldnames=headers, delimiter=';')
@@ -34,6 +55,15 @@ class FileManager:
                                  )
 
     def write_orders(parsed_orders_list):
+        '''
+        Writes main output file 
+
+            Parameters:
+                    parsed_orders_list (list[dict[str, str]]): sorted list of parsed and simplified orders
+
+            Returns:
+                    None
+        '''
         with open(os.path.join(PATH, OUPUT_FILENAME), 'w', encoding='utf-8') as out_file:
             writer = csv.DictWriter(out_file, fieldnames=INPUT_HEADERS, delimiter=';')
 
